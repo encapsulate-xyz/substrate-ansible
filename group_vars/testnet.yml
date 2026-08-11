@@ -4,6 +4,6 @@ avail:
   snapshot_url: https://snapshots.publicnode.com/avail-turing-3125786.tar.lz4
   validator:
     version: v2.3.4.1
-    grandpa_authority_id: "0x641eedeb227a27cb7649d88aa2095afb653787aa55ce2b7ede1f3e216d60fff7"
+    grandpa_authority_id: "0x1cfb72416b41cb7eb26766baedfb02244af67e70e5a4141683fbf5ba43d22480"
     node:
       version: v18.20.5
