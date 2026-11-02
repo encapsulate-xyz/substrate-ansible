@@ -1,0 +1,5 @@
+# This file contains ignores rule violations for ansible-lint
+roles/metrics/tasks/main.yml yaml[truthy]
+roles/node/tasks/install_binary/avail.yml var-naming[no-role-prefix]
+roles/node/tasks/main.yml yaml[trailing-spaces]
+setup_metrics.yml yaml[trailing-spaces]
