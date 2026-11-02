@@ -11,7 +11,7 @@ ExecStart={{ node_bin_dir }}/{{ service_identifier }} --chain infinity.turing \
 --base-path {{ node_data_dir }} \
 --keystore-path {{ node_keystore_dir }} \
 --port {{ avail[type].ports.p2p_port }} \
-{% if fetch_vault_secrets | default(false) %}
+{% if fetch_vault_secrets | default(false) | bool %}
 --node-key-file {{ node_key_file_path }} \
 {% else %}
 --unsafe-force-node-key-generation \
