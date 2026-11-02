@@ -1,12 +1,12 @@
 ---
 - name: Set system variables
   ansible.builtin.set_fact:
-    distro: "{{ ansible_distribution | lower }}"
-    distro_version: "{{ ansible_distribution_version | replace('.', '') }}"
+    node_distro: "{{ ansible_distribution | lower }}"
+    node_distro_version: "{{ ansible_distribution_version | replace('.', '') }}"
 
 - name: Set archive filename
   ansible.builtin.set_fact:
-    archive_file_name: "{{ ansible_architecture }}-{{ distro }}-{{ distro_version }}-{{ node_default_binary_name[project] }}.tar.gz"
+    node_archive_file_name: "{{ ansible_architecture }}-{{ node_distro }}-{{ node_distro_version }}-{{ node_default_binary_name[project] }}.tar.gz"
 
 - name: Create a tmp service identifier directory
   ansible.builtin.file:
@@ -18,12 +18,40 @@
 
 - name: Download and unarchive the binary
   ansible.builtin.unarchive:
-    src: "{{ avail[type].source_url }}/{{ avail[type].version }}/{{ archive_file_name }}"
+    src: "{{ avail[type].source_url }}/{{ avail[type].version }}/{{ node_archive_file_name }}"
     dest: "{{ tmp_dir }}/{{ service_identifier }}"
     remote_src: true
     owner: root
     group: root
     mode: "0755"
+  when: avail[type].docker_image is not defined
+
+- name: Create Avail node Docker container and copy binary
+  when: avail[type].docker_image is defined
+  vars:
+    container_name: "{{ service_identifier }}_binary"
+  block:
+    - name: Create temporary Avail node container for binary extraction
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        image: "{{ avail[type].docker_image }}:{{ avail[type].version }}"
+        state: present
+        recreate: true
+
+    - name: Copy Avail node binary
+      ansible.builtin.shell: >
+        docker cp {{ container_name }}:/usr/local/bin/{{ node_default_binary_name[project] }}
+        {{ tmp_dir }}/{{ service_identifier }}/{{ node_default_binary_name[project] }}
+      args:
+        executable: /bin/bash
+      register: node_copy_result
+      changed_when: node_copy_result.rc == 0
+
+  always:
+    - name: Remove Avail node container
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        state: absent
 
 - name: Copy the binary file
   ansible.builtin.copy:

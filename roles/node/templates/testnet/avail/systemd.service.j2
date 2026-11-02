@@ -5,14 +5,16 @@ Description={{ service_identifier }}
 User={{ service_identifier }}
 Group={{ service_identifier }}
 WorkingDirectory={{ node_home_dir }}
-ExecStart={{ node_bin_dir }}/{{ service_identifier }} --chain turing \
+ExecStart={{ node_bin_dir }}/{{ service_identifier }} --chain infinity.turing \
 --validator \
 --name {{ org }} \
 --base-path {{ node_data_dir }} \
 --keystore-path {{ node_keystore_dir }} \
 --port {{ avail[type].ports.p2p_port }} \
-{% if fetch_validator_keys | default(false) %}
+{% if fetch_vault_secrets | default(false) %}
 --node-key-file {{ node_key_file_path }} \
+{% else %}
+--unsafe-force-node-key-generation \
 {% endif %}
 --rpc-port {{ avail[type].ports.rpc_port }} \
 --prometheus-external \

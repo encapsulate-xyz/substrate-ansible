@@ -13,7 +13,7 @@ ExecStart={{ node_bin_dir }}/{{ service_identifier }} --chain vara \
 --rpc-cors all \
 --keystore-path {{ node_keystore_dir }} \
 --port {{ vara[type].ports.p2p_port }} \
-{% if fetch_validator_keys | default(false) %}
+{% if fetch_vault_secrets | default(false) %}
 --node-key-file {{ node_key_file_path }} \
 {% else %}
 --unsafe-force-node-key-generation \

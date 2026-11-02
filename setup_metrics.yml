@@ -17,7 +17,7 @@
     - name: Set service_identifier
       ansible.builtin.set_fact:
         service_identifier: "{{ node_service_identifier }}-metrics"
-    
+
     - name: Include common handlers
       ansible.builtin.include_role:
         name: common

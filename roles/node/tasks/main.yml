@@ -19,7 +19,7 @@
 
 - name: Fetch node key from vault
   ansible.builtin.include_tasks: tasks/get_and_save_vault_secret.yml
-  when: 
+  when:
     - type == 'validator'
     - fetch_vault_secrets | default(false) | bool
   vars:
