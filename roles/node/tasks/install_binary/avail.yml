@@ -24,6 +24,34 @@
     owner: root
     group: root
     mode: "0755"
+  when: avail[type].docker_image is not defined
+
+- name: Create Avail node Docker container and copy binary
+  when: avail[type].docker_image is defined
+  vars:
+    container_name: "{{ service_identifier }}_binary"
+  block:
+    - name: Create temporary Avail node container for binary extraction
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        image: "{{ avail[type].docker_image }}:{{ avail[type].version }}"
+        state: present
+        recreate: true
+
+    - name: Copy Avail node binary
+      ansible.builtin.shell: >
+        docker cp {{ container_name }}:/usr/local/bin/{{ node_default_binary_name[project] }}
+        {{ tmp_dir }}/{{ service_identifier }}/{{ node_default_binary_name[project] }}
+      args:
+        executable: /bin/bash
+      register: copy_result
+      changed_when: copy_result.rc == 0
+
+  always:
+    - name: Remove Avail node container
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        state: absent
 
 - name: Copy the binary file
   ansible.builtin.copy:
