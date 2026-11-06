@@ -12,6 +12,6 @@ vara:
   snapshot_url: https://snapshots.vara.network/vara-mainnet-31499599.tar.lz4
   validator:
     version: v2.1.1
-    grandpa_authority_id: "0x394ad066ec16ed8902a178450944403d1576243a154eafdb35341977668bfefc"
+    grandpa_authority_id: "0xe29f131fe18262d78878f4dffae1b25519d864fe7862ee13ef3044a6932df98e"
     node:
       version: v18.20.5
